@@ -1,0 +1,88 @@
+﻿version 3.00
+cm_version 1.0
+platform CM-530
+o main
+o begin
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:dec_num:0 rop:then
+- 
+o load param_dest:motion:1:50 param_src:dec_num:31
+- 
+o while(1)
+o begin
+- 
+- 
+o if param_src:cm:4 lop:== param_src:button_num:8 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:10
+o while param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o begin
+o if param_src:cm:4 lop:== param_src:button_num:1 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:dec_num:0 rop:then
+- 
+o load param_dest:motion:1:50 param_src:dec_num:241
+o // param_text:cross-hole
+o end
+o if param_src:cm:4 lop:== param_src:button_num:4 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:dec_num:0 rop:then
+- 
+o load param_dest:motion:1:50 param_src:dec_num:32
+o // param_text:forward
+o end
+o end
+- 
+o load param_dest:motion:1:50 param_src:dec_num:229
+o // param_text:upstair
+o end
+- 
+o if param_src:cm:4 lop:== param_src:button_num:4 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:dec_num:0 rop:then
+- 
+o load param_dest:motion:1:50 param_src:dec_num:226
+o // param_text:downstair
+o end
+- 
+- 
+o if param_src:cm:4 lop:== param_src:button_num:1 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:dec_num:0 rop:then
+- 
+o load param_dest:motion:1:50 param_src:dec_num:1
+o // param_text:uporz
+o end
+- 
+o if param_src:cm:4 lop:== param_src:button_num:2 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:dec_num:0 rop:then
+- 
+o load param_dest:cm:5 param_src:timer_num:10
+o while param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o begin
+o if param_src:cm:4 lop:== param_src:button_num:1 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:dec_num:0 rop:then
+- 
+o load param_dest:motion:1:50 param_src:dec_num:237
+o // param_text:cross-gap
+o end
+o end
+- 
+- 
+- 
+o load param_dest:motion:1:50 param_src:dec_num:6
+o // param_text:downorz
+o end
+- 
+- 
+o end
+- 
+o end

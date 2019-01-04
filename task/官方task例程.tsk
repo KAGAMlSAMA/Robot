@@ -1,0 +1,924 @@
+﻿version 3.00
+cm_version 1.0
+platform CM-510
+o // param_text:Title- Tutorial Premium Kit Robot  A-type
+o // param_text:First Distribution : 2009/10/01
+o // param_text:1st Modify : 2012/07/24 (fixed some bugs in WalkExecute)
+o // param_text:[Operating]
+o // param_text:A-Type Robot
+o main
+o begin
+o // param_text:Types of robots, 0 : not identified, 1: Type A, 2: Type B, 3: Type C 
+o load param_dest:var:RobotType param_src:dec_num:0
+o // param_text:Common ID is needed for 1~6 and 11~18. 
+o for param_var:ID param_src:dec_num:1 param_src:dec_num:6
+o begin
+o if param_src:custom:b:ID:3 lop:!= param_src:var:ID rop:then
+o begin
+o jump laddr_dest:TypeResult
+o end
+o end
+o for param_var:ID param_src:dec_num:11 param_src:dec_num:18
+o begin
+o if param_src:custom:b:ID:3 lop:!= param_src:var:ID rop:then
+o begin
+o jump laddr_dest:TypeResult
+o end
+o end
+o // param_text:ID when 7,8,9,10 exist, A type
+o if param_src:custom:b:7:3 lop:== param_src:dec_num:7 rop:&& param_src:custom:b:8:3 lop:== param_src:dec_num:8 rop:&& param_src:custom:b:9:3 lop:== param_src:dec_num:9 rop:&& param_src:custom:b:10:3 lop:== param_src:dec_num:10 rop:then
+o begin
+o load param_dest:var:RobotType param_src:dec_num:1
+o jump laddr_dest:TypeResult
+o end
+o // param_text:ID when 7,8 exist, B type
+o if param_src:custom:b:7:3 lop:== param_src:dec_num:7 rop:&& param_src:custom:b:8:3 lop:== param_src:dec_num:8 rop:&& param_src:custom:b:9:3 lop:!= param_src:dec_num:9 rop:&& param_src:custom:b:10:3 lop:!= param_src:dec_num:10 rop:then
+o begin
+o load param_dest:var:RobotType param_src:dec_num:2
+o jump laddr_dest:TypeResult
+o end
+o // param_text:ID when 9, 10 exist, Ctype
+o if param_src:custom:b:7:3 lop:!= param_src:dec_num:7 rop:&& param_src:custom:b:8:3 lop:!= param_src:dec_num:8 rop:&& param_src:custom:b:9:3 lop:== param_src:dec_num:9 rop:&& param_src:custom:b:10:3 lop:== param_src:dec_num:10 rop:then
+o begin
+o load param_dest:var:RobotType param_src:dec_num:3
+o jump laddr_dest:TypeResult
+o end
+o label laddr_src:TypeResult
+o if param_src:var:RobotType lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:5
+o load param_dest:cm:17 param_src:scale_num:3
+o call faddr_dest:WaitBuzzer
+o end
+o elseif param_src:var:RobotType lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:3
+o load param_dest:cm:17 param_src:scale_num:3
+o call faddr_dest:WaitBuzzer
+o load param_dest:cm:18 param_src:buzzertime_num:5
+o load param_dest:cm:17 param_src:scale_num:5
+o call faddr_dest:WaitBuzzer
+o end
+o elseif param_src:var:RobotType lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:3
+o load param_dest:cm:17 param_src:scale_num:3
+o call faddr_dest:WaitBuzzer
+o load param_dest:cm:18 param_src:buzzertime_num:3
+o load param_dest:cm:17 param_src:scale_num:5
+o call faddr_dest:WaitBuzzer
+o load param_dest:cm:18 param_src:buzzertime_num:5
+o load param_dest:cm:17 param_src:scale_num:7
+o call faddr_dest:WaitBuzzer
+o end
+o else
+o begin
+o while(1)
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:3
+o load param_dest:cm:17 param_src:scale_num:3
+o while param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o begin
+o if param_src:cm:4 lop:== param_src:button_num:8 rop:then
+o jump laddr_dest:CheckAssemblyMode
+o end
+o load param_dest:cm:18 param_src:buzzertime_num:3
+o load param_dest:cm:17 param_src:scale_num:5
+o while param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o begin
+o if param_src:cm:4 lop:== param_src:button_num:8 rop:then
+o jump laddr_dest:CheckAssemblyMode
+o end
+o load param_dest:cm:18 param_src:buzzertime_num:3
+o load param_dest:cm:17 param_src:scale_num:7
+o while param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o begin
+o if param_src:cm:4 lop:== param_src:button_num:8 rop:then
+o jump laddr_dest:CheckAssemblyMode
+o end
+o end
+o end
+- 
+o // param_text:Taking the initial position assembly Check
+o load param_dest:motor:254:107 param_src:dir_num:100
+o for param_var:ID param_src:dec_num:1 param_src:dec_num:18
+o begin
+o call faddr_dest:CheckAssembly
+o end
+- 
+o load param_dest:cm:5 param_src:timer_num:12
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o // param_text:Set up at IR channel broadcast. (Can control with every channel) 
+o load param_dest:cm:22 param_src:channel_num:0
+- 
+o // param_text:Mode Select
+o while(1)
+o begin
+o if param_src:cm:4 lop:== param_src:button_num:8 rop:then
+o jump laddr_dest:CheckAssemblyMode
+o elseif param_src:cm:4 lop:== param_src:button_num:4 rop:then
+o jump laddr_dest:DemoMode
+o elseif param_src:cm:4 lop:== param_src:button_num:1 rop:|| param_src:cm:2 lop:== param_src:bool_num:1 rop:then
+o jump laddr_dest:RemoteControl
+o elseif param_src:cm:4 lop:== param_src:button_num:2 rop:then
+o jump laddr_dest:AutoWalkMode
+- 
+o // param_text:Search the motor overload
+o for param_var:ID param_src:dec_num:1 param_src:dec_num:18
+o begin
+o // param_text:If the power control value is 0, it means it was turned off due to overload. 
+o if param_src:custom:w:ID:34 lop:== param_src:dec_num:0 rop:then
+o begin
+o while(1)
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:18
+o while param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o begin
+o if param_src:cm:4 lop:== param_src:button_num:8 rop:then
+o jump laddr_dest:CheckAssemblyMode
+o end
+o end
+o end
+o end
+o end
+- 
+o label laddr_src:CheckAssemblyMode
+o // param_text:Play Start Melody
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:1
+- 
+o load param_dest:var:ID param_src:dec_num:1
+o load param_dest:motor:254:107 param_src:dir_num:100
+o load param_dest:motor:254:100 param_src:bool_num:0
+o load param_dest:motor:254:101 param_src:bool_num:0
+- 
+o load param_dest:cm:5 param_src:timer_num:12
+o call faddr_dest:WaitTimer
+- 
+o while(1)
+o begin
+o if param_src:cm:4 lop:== param_src:button_num:8 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:5
+o load param_dest:cm:18 param_src:buzzertime_num:5
+o load param_dest:cm:17 param_src:scale_num:15
+o call faddr_dest:WaitTimer
+o if param_src:var:ID lop:< param_src:dec_num:18 rop:then
+o begin
+o load param_dest:custom:b:ID:24 param_src:dec_num:0
+o load param_dest:custom:b:ID:25 param_src:dec_num:0
+o compute param_dest:var:ID param_src:var:ID aop:+ param_src:dec_num:1
+o end
+o end
+o elseif param_src:cm:4 lop:== param_src:button_num:4 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:5
+o load param_dest:cm:18 param_src:buzzertime_num:5
+o load param_dest:cm:17 param_src:scale_num:3
+o call faddr_dest:WaitTimer
+o if param_src:var:ID lop:> param_src:dec_num:1 rop:then
+o begin
+o load param_dest:custom:b:ID:24 param_src:dec_num:0
+o load param_dest:custom:b:ID:25 param_src:dec_num:0
+o compute param_dest:var:ID param_src:var:ID aop:- param_src:dec_num:1
+o end
+o end
+- 
+o if param_src:custom:b:ID:3 lop:!= param_src:var:ID rop:then
+o begin
+o if param_src:cm:18 lop:== param_src:buzzertime_num:0 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:16
+o end
+o end
+o elseif param_src:custom:w:ID:34 lop:== param_src:dec_num:0 rop:then
+o begin
+o if param_src:cm:18 lop:== param_src:buzzertime_num:0 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:18
+o end
+o end
+o else
+o begin
+o call faddr_dest:CheckAssembly
+o load param_dest:custom:b:ID:25 param_src:dec_num:1
+o end
+o end
+- 
+o label laddr_src:DemoMode
+o // param_text:Play Melody
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:2
+- 
+o // param_text:Setting the Initial Position
+o load param_dest:motion:1:50 param_src:dec_num:31
+o call faddr_dest:WaitBuzzer
+o call faddr_dest:WaitMotion
+- 
+o load param_dest:var:WaitDemo param_src:timer_num:79
+o load param_dest:var:DemoMotion param_src:dec_num:1
+o load param_dest:cm:5 param_src:var:WaitDemo
+o load param_dest:cm:19 param_src:dec_num:0
+- 
+o while(1)
+o begin
+o if param_src:cm:19 lop:> param_src:dec_num:0 rop:then
+o begin
+o load param_dest:var:RepeatCount param_src:cm:19
+o load param_dest:motion:1:50 param_src:dec_num:29
+o call faddr_dest:WaitMotion
+- 
+o for param_var:Count param_src:dec_num:1 param_src:var:RepeatCount
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:30
+o call faddr_dest:WaitMotion
+o end
+- 
+o load param_dest:motion:1:50 param_src:dec_num:31
+o call faddr_dest:WaitMotion
+- 
+o load param_dest:cm:5 param_src:timer_num:8
+o call faddr_dest:WaitTimer
+o load param_dest:cm:19 param_src:dec_num:0
+o load param_dest:cm:5 param_src:var:WaitDemo
+o end
+o elseif param_src:aux:5:64 lop:> param_src:dec_num:200 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:1
+o call faddr_dest:WaitMotion
+- 
+o load param_dest:cm:5 param_src:timer_num:4
+o call faddr_dest:WaitTimer
+o load param_dest:cm:19 param_src:dec_num:0
+o load param_dest:cm:5 param_src:var:WaitDemo
+o end
+o elseif param_src:cm:5 lop:== param_src:timer_num:0 rop:then
+o begin
+o if param_src:var:DemoMotion lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:7
+o end
+o elseif param_src:var:DemoMotion lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:5
+o end
+o elseif param_src:var:DemoMotion lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:8
+o end
+o elseif param_src:var:DemoMotion lop:== param_src:dec_num:4 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:11
+o end
+o else
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:2
+o load param_dest:var:DemoMotion param_src:dec_num:0
+o end
+- 
+o call faddr_dest:WaitMotion
+- 
+o load param_dest:cm:5 param_src:timer_num:4
+o call faddr_dest:WaitTimer
+o load param_dest:cm:19 param_src:dec_num:0
+o load param_dest:cm:5 param_src:var:WaitDemo
+o compute param_dest:var:DemoMotion param_src:var:DemoMotion aop:+ param_src:dec_num:1
+o end
+o end
+- 
+o label laddr_src:AutoWalkMode
+o // param_text:Play Melody
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+- 
+o call faddr_dest:InitializationWalk
+o call faddr_dest:WaitBuzzer
+o call faddr_dest:InitializationGyro
+- 
+o while(1)
+o begin
+o if param_src:aux:5:64 lop:> param_src:dec_num:300 rop:then
+o load param_dest:var:WalkCommand param_src:dec_num:3
+o else
+o load param_dest:var:WalkCommand param_src:dec_num:1
+o call faddr_dest:WalkExecute
+- 
+o if param_src:var:Slip lop:!= param_src:dec_num:0 rop:then
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:0
+o call faddr_dest:WalkExecute
+- 
+o if param_src:var:Slip lop:== param_src:dec_num:1 rop:then
+o load param_dest:motion:1:50 param_src:dec_num:27
+o elseif param_src:var:Slip lop:== param_src:dec_num:-1 rop:then
+o load param_dest:motion:1:50 param_src:dec_num:28
+- 
+o call faddr_dest:WaitMotion
+o load param_dest:var:Slip param_src:dec_num:0
+o end
+o end
+- 
+o label laddr_src:RemoteControl
+o // param_text:Play Melody
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:0
+- 
+o call faddr_dest:InitializationWalk
+o // param_text:It will stand by if there are no inputs for 1 minute.  60 / 0.128 = 468.75
+o load param_dest:var:WaitControl param_src:dec_num:469
+o load param_dest:cm:5 param_src:var:WaitControl
+o load param_dest:var:First param_src:bool_num:1
+- 
+o while(1)
+o begin
+o if param_src:cm:2 lop:== param_src:bool_num:1 rop:then
+o begin
+o if param_src:var:First lop:== param_src:bool_num:1 rop:then
+o begin
+o call faddr_dest:InitializationGyro
+o load param_dest:var:First param_src:bool_num:0
+o end
+- 
+o load param_dest:cm:5 param_src:var:WaitControl
+o load param_dest:var:ReceiveData param_src:cm:1
+o if param_src:var:ReceiveData lop:== param_src:rc100z_num:1 rop:then
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:1
+o call faddr_dest:WalkExecute
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:2 rop:then
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:2
+o call faddr_dest:WalkExecute
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:4 rop:then
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:3
+o call faddr_dest:WalkExecute
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:8 rop:then
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:4
+o call faddr_dest:WalkExecute
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:5 rop:then
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:7
+o call faddr_dest:WalkExecute
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:9 rop:then
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:8
+o call faddr_dest:WalkExecute
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:6 rop:then
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:5
+o call faddr_dest:WalkExecute
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:10 rop:then
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:6
+o call faddr_dest:WalkExecute
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:0 rop:then
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:0
+o call faddr_dest:WalkExecute
+o end
+o else
+o begin
+o load param_dest:var:WalkCommand param_src:dec_num:0
+o call faddr_dest:WalkExecute
+o load param_dest:var:GyroUse param_src:bool_num:0
+o call faddr_dest:EXITPageWaitMotion
+- 
+o if param_src:var:ReceiveData lop:== param_src:rc100z_num:17 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:27
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:18 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:28
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:20 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:8
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:24 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:11
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:33 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:5
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:34 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:7
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:36 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:2
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:40 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:1
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:65 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:14
+o wait param_src:var:ReceiveData lop:== param_src:cm:1 rop:then
+o call faddr_dest:EXITPageWaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:66 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:16
+o wait param_src:var:ReceiveData lop:== param_src:cm:1 rop:then
+o call faddr_dest:EXITPageWaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:68 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:18
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:72 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:19
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:129 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:22
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:130 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:23
+o wait param_src:var:ReceiveData lop:== param_src:cm:1 rop:then
+o call faddr_dest:EXITPageWaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:132 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:21
+o call faddr_dest:WaitMotion
+o end
+o elseif param_src:var:ReceiveData lop:== param_src:rc100z_num:136 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:20
+o call faddr_dest:WaitMotion
+o end
+- 
+o load param_dest:var:GyroUse param_src:bool_num:1
+o end
+o end
+- 
+o if param_src:motion:1:51 lop:== param_src:bool_num:0 rop:then
+o begin
+o if param_src:motion:1:50 lop:!= param_src:var:BalancePage rop:then
+o begin
+o load param_dest:var:FinishExcuteMotionPage param_src:motion:1:50
+o end
+o load param_dest:motion:1:50 param_src:var:BalancePage
+o end
+- 
+o if param_src:cm:4 lop:== param_src:button_num:24 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:8
+o call faddr_dest:WaitTimer
+o if param_src:cm:4 lop:== param_src:button_num:24 rop:then
+o begin
+o load param_dest:cm:22 param_src:channel_num:1
+o call faddr_dest:IR_Signal
+o end
+o load param_dest:cm:5 param_src:var:WaitControl
+o end
+o elseif param_src:cm:4 lop:== param_src:button_num:18 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:8
+o call faddr_dest:WaitTimer
+o if param_src:cm:4 lop:== param_src:button_num:18 rop:then
+o begin
+o load param_dest:cm:22 param_src:channel_num:2
+o call faddr_dest:IR_Signal
+o end
+o load param_dest:cm:5 param_src:var:WaitControl
+o end
+o elseif param_src:cm:4 lop:== param_src:button_num:20 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:8
+o call faddr_dest:WaitTimer
+o if param_src:cm:4 lop:== param_src:button_num:20 rop:then
+o begin
+o load param_dest:cm:22 param_src:channel_num:3
+o call faddr_dest:IR_Signal
+o end
+o load param_dest:cm:5 param_src:var:WaitControl
+o end
+o elseif param_src:cm:4 lop:== param_src:button_num:17 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:8
+o call faddr_dest:WaitTimer
+o if param_src:cm:4 lop:== param_src:button_num:17 rop:then
+o begin
+o load param_dest:cm:22 param_src:channel_num:4
+o call faddr_dest:IR_Signal
+o end
+o load param_dest:cm:5 param_src:var:WaitControl
+o end
+- 
+o if param_src:cm:5 lop:== param_src:timer_num:0 rop:then
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:0
+o call faddr_dest:WaitMotion
+o load param_dest:motion:1:50 param_src:dec_num:25
+o call faddr_dest:WaitMotion
+o load param_dest:motor:254:100 param_src:bool_num:0
+o wait param_src:cm:2 lop:== param_src:bool_num:0 rop:then
+o load param_dest:motion:1:50 param_src:dec_num:26
+o call faddr_dest:WaitMotion
+o end
+o end
+o end
+- 
+o function faddr_src:CheckAssembly
+o begin
+o if param_src:var:ID lop:== param_src:dec_num:1 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:337
+o elseif param_src:var:ID lop:== param_src:dec_num:2 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:687
+o elseif param_src:var:ID lop:== param_src:dec_num:3 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:300
+o elseif param_src:var:ID lop:== param_src:dec_num:4 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:724
+o elseif param_src:var:ID lop:== param_src:dec_num:5 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:412
+o elseif param_src:var:ID lop:== param_src:dec_num:6 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:612
+o elseif param_src:var:ID lop:== param_src:dec_num:7 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:357
+o elseif param_src:var:ID lop:== param_src:dec_num:8 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:667
+o elseif param_src:var:ID lop:== param_src:dec_num:9 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:492
+o elseif param_src:var:ID lop:== param_src:dec_num:10 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:532
+o elseif param_src:var:ID lop:== param_src:dec_num:11 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:397
+o elseif param_src:var:ID lop:== param_src:dec_num:12 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:627
+o elseif param_src:var:ID lop:== param_src:dec_num:13 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:282
+o elseif param_src:var:ID lop:== param_src:dec_num:14 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:742
+o elseif param_src:var:ID lop:== param_src:dec_num:15 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:637
+o elseif param_src:var:ID lop:== param_src:dec_num:16 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:387
+o elseif param_src:var:ID lop:== param_src:dec_num:17 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:492
+o elseif param_src:var:ID lop:== param_src:dec_num:18 rop:then
+o load param_dest:custom:w:ID:30 param_src:dec_num:532
+o end
+- 
+o function faddr_src:IR_Signal
+o begin
+o for param_var:Count param_src:dec_num:1 param_src:cm:22
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:13
+- 
+o load param_dest:cm:3 param_src:bool_num:1
+o load param_dest:cm:5 param_src:timer_num:3
+o call faddr_dest:WaitTimer
+- 
+o load param_dest:cm:3 param_src:bool_num:0
+o load param_dest:cm:5 param_src:timer_num:3
+o call faddr_dest:WaitTimer
+o end
+o end
+- 
+o function faddr_src:WaitBuzzer
+o begin
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o end
+- 
+o function faddr_src:WaitTimer
+o begin
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o function faddr_src:InitializationWalk
+o begin
+o load param_dest:var:BalancePage param_src:dec_num:224
+o load param_dest:var:WalkPageStart param_src:dec_num:31
+o load param_dest:var:WalkCommand param_src:dec_num:0
+o load param_dest:motion:1:50 param_src:var:WalkPageStart
+o call faddr_dest:WaitMotion
+o load param_dest:var:WalkState param_src:dec_num:0
+o end
+- 
+o function faddr_src:WalkExecute
+o begin
+o // param_text:Using WalkControl Variable
+o // param_text: 0 : Stop,                    1 : Forward,                 2 : Backward,                 3 : Turn Left,       4 = Turn Right,
+o // param_text: 5 : Left Side,          6 : Right Side,                      7 : 1 + 5,                    8 : 1 + 6,              9 : 2 + 5,
+o // param_text:10 : 2 + 6,             11 : Avoid Left,        12 : Avoid Right,           13 : 1 +3,              14 : 1+4,
+o // param_text:15 = 2+3,           16 = 2+4
+- 
+- 
+o if param_src:var:WalkCommand lop:== param_src:var:WalkState rop:then
+o return
+- 
+- 
+o compute param_dest:var:Temp1 param_src:dec_num:196 aop:+ param_src:var:WalkPageStart
+o if param_src:motion:1:50 lop:< param_src:var:WalkPageStart rop:|| param_src:motion:1:50 lop:> param_src:var:Temp1 rop:then
+o begin
+o call faddr_dest:EXITPageWaitMotion
+o if param_src:motion:1:50 lop:!= param_src:var:BalancePage rop:then
+o begin
+o load param_dest:motion:1:50 param_src:var:WalkPageStart
+o call faddr_dest:WaitMotion
+o end
+o end
+- 
+- 
+o if param_src:var:WalkCommand lop:== param_src:dec_num:0 rop:then
+o begin
+o call faddr_dest:EXITPageWaitMotion
+o load param_dest:var:WalkState param_src:dec_num:0
+o return
+o end
+- 
+- 
+o if param_src:var:WalkState lop:== param_src:dec_num:1 rop:then
+o begin
+o if param_src:var:WalkCommand lop:== param_src:dec_num:7 rop:then
+o begin
+o compute param_dest:var:Temp1 param_src:var:WalkPageStart aop:+ param_src:dec_num:3
+o compute param_dest:var:Temp2 param_src:var:WalkPageStart aop:+ param_src:dec_num:4
+o compute param_dest:var:Temp3 param_src:var:WalkPageStart aop:+ param_src:dec_num:1
+o compute param_dest:var:Temp4 param_src:var:WalkPageStart aop:+ param_src:dec_num:8
+o if param_src:motion:1:50 lop:>= param_src:var:Temp1 rop:&& param_src:motion:1:50 lop:<= param_src:var:Temp2 rop:then
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp2 rop:then
+o elseif param_src:motion:1:50 lop:>= param_src:var:Temp3 rop:&& param_src:motion:1:50 lop:<= param_src:var:Temp4 rop:then
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp4 rop:then
+o call faddr_dest:CurrentPageWaitMotion
+o compute param_dest:motion:1:50 param_src:var:WalkPageStart aop:+ param_src:dec_num:77
+o load param_dest:var:WalkState param_src:dec_num:7
+o return
+o end
+o elseif param_src:var:WalkCommand lop:== param_src:dec_num:8 rop:then
+o begin
+o compute param_dest:var:Temp1 param_src:var:WalkPageStart aop:+ param_src:dec_num:1
+o compute param_dest:var:Temp2 param_src:var:WalkPageStart aop:+ param_src:dec_num:2
+o compute param_dest:var:Temp3 param_src:var:WalkPageStart aop:+ param_src:dec_num:6
+o compute param_dest:var:Temp4 param_src:var:WalkPageStart aop:+ param_src:dec_num:8
+o if param_src:motion:1:50 lop:>= param_src:var:Temp1 rop:&& param_src:motion:1:50 lop:<= param_src:var:Temp2 rop:then
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp2 rop:then
+o elseif param_src:motion:1:50 lop:>= param_src:var:Temp1 rop:&& param_src:motion:1:50 lop:<= param_src:var:Temp4 rop:then
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp3 rop:then
+- 
+o call faddr_dest:CurrentPageWaitMotion
+- 
+o compute param_dest:motion:1:50 param_src:var:WalkPageStart aop:+ param_src:dec_num:91
+o load param_dest:var:WalkState param_src:dec_num:8
+o return
+o end
+o end
+- 
+- 
+o if param_src:var:WalkState lop:== param_src:dec_num:7 rop:then
+o begin
+o if param_src:var:WalkCommand lop:== param_src:dec_num:1 rop:|| param_src:var:WalkCommand lop:== param_src:dec_num:8 rop:then
+o begin
+o compute param_dest:var:Temp1 param_src:var:WalkPageStart aop:+ param_src:dec_num:80
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp1 rop:then
+o call faddr_dest:CurrentPageWaitMotion
+o compute param_dest:motion:1:50 param_src:var:WalkPageStart aop:+ param_src:dec_num:5
+o load param_dest:var:WalkState param_src:dec_num:1
+o return
+o end
+o end
+- 
+- 
+o if param_src:var:WalkState lop:== param_src:dec_num:8 rop:then
+o begin
+o if param_src:var:WalkCommand lop:== param_src:dec_num:1 rop:|| param_src:var:WalkCommand lop:== param_src:dec_num:7 rop:then
+o begin
+o compute param_dest:var:Temp1 param_src:var:WalkPageStart aop:+ param_src:dec_num:90
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp1 rop:then
+o call faddr_dest:CurrentPageWaitMotion
+o compute param_dest:motion:1:50 param_src:var:WalkPageStart aop:+ param_src:dec_num:7
+o load param_dest:var:WalkState param_src:dec_num:1
+o return
+o end
+o end
+- 
+- 
+o if param_src:var:WalkState lop:== param_src:dec_num:2 rop:then
+o begin
+o if param_src:var:WalkCommand lop:== param_src:dec_num:9 rop:then
+o begin
+o compute param_dest:var:Temp1 param_src:var:WalkPageStart aop:+ param_src:dec_num:13
+o compute param_dest:var:Temp2 param_src:var:WalkPageStart aop:+ param_src:dec_num:14
+o compute param_dest:var:Temp3 param_src:var:WalkPageStart aop:+ param_src:dec_num:18
+o compute param_dest:var:Temp4 param_src:var:WalkPageStart aop:+ param_src:dec_num:20
+o if param_src:motion:1:50 lop:>= param_src:var:Temp1 rop:&& param_src:motion:1:50 lop:<= param_src:var:Temp2 rop:then
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp2 rop:then
+o elseif param_src:motion:1:50 lop:>= param_src:var:Temp1 rop:&& param_src:motion:1:50 lop:<= param_src:var:Temp4 rop:then
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp3 rop:then
+o call faddr_dest:CurrentPageWaitMotion
+- 
+o compute param_dest:motion:1:50 param_src:var:WalkPageStart aop:+ param_src:dec_num:103
+o load param_dest:var:WalkState param_src:dec_num:9
+o return
+o end
+o elseif param_src:var:WalkCommand lop:== param_src:dec_num:10 rop:then
+o begin
+o compute param_dest:var:Temp1 param_src:var:WalkPageStart aop:+ param_src:dec_num:15
+o compute param_dest:var:Temp2 param_src:var:WalkPageStart aop:+ param_src:dec_num:16
+o compute param_dest:var:Temp3 param_src:var:WalkPageStart aop:+ param_src:dec_num:13
+o compute param_dest:var:Temp4 param_src:var:WalkPageStart aop:+ param_src:dec_num:20
+o if param_src:motion:1:50 lop:>= param_src:var:Temp1 rop:&& param_src:motion:1:50 lop:<= param_src:var:Temp2 rop:then
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp2 rop:then
+o elseif param_src:motion:1:50 lop:>= param_src:var:Temp3 rop:&& param_src:motion:1:50 lop:<= param_src:var:Temp4 rop:then
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp4 rop:then
+o call faddr_dest:CurrentPageWaitMotion
+- 
+o compute param_dest:motion:1:50 param_src:var:WalkPageStart aop:+ param_src:dec_num:113
+o load param_dest:var:WalkState param_src:dec_num:10
+o return
+o end
+o end
+- 
+- 
+o if param_src:var:WalkState lop:== param_src:dec_num:9 rop:then
+o begin
+o if param_src:var:WalkCommand lop:== param_src:dec_num:2 rop:|| param_src:var:WalkCommand lop:== param_src:dec_num:10 rop:then
+o begin
+o compute param_dest:var:Temp1 param_src:var:WalkPageStart aop:+ param_src:dec_num:102
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp1 rop:then
+o call faddr_dest:CurrentPageWaitMotion
+o compute param_dest:motion:1:50 param_src:var:WalkPageStart aop:+ param_src:dec_num:19
+o load param_dest:var:WalkState param_src:dec_num:2
+o return
+o end
+o end
+- 
+- 
+o if param_src:var:WalkState lop:== param_src:dec_num:10 rop:then
+o begin
+o if param_src:var:WalkCommand lop:== param_src:dec_num:2 rop:|| param_src:var:WalkCommand lop:== param_src:dec_num:9 rop:then
+o begin
+o compute param_dest:var:Temp1 param_src:var:WalkPageStart aop:+ param_src:dec_num:116
+o wait param_src:motion:1:50 lop:!= param_src:var:Temp1 rop:then
+o call faddr_dest:CurrentPageWaitMotion
+o compute param_dest:motion:1:50 param_src:var:WalkPageStart aop:+ param_src:dec_num:17
+o load param_dest:var:WalkState param_src:dec_num:2
+o return
+o end
+o end
+- 
+- 
+o if param_src:var:WalkCommand lop:>= param_src:dec_num:1 rop:&& param_src:var:WalkCommand lop:<= param_src:dec_num:20 rop:then
+o begin
+o // param_text:Using WalkControl Variable
+o // param_text: 0 : Stop,                    1 : Forward,                 2 : Backward,                 3 : Turn Left,       4 = Turn Right,
+o // param_text: 5 : Left Side,          6 : Right Side,                      7 : 1 + 5,                    8 : 1 + 6,              9 : 2 + 5,
+o // param_text:10 : 2 + 6,             11 : Avoid Left,        12 : Avoid Right,           13 : 1 +3,              14 : 1+4,
+o // param_text:15 = 2+3,           16 = 2+4
+o // param_text:Enter into courses when the change of walking status is required. 
+o call faddr_dest:EXITPageWaitMotion
+o // param_text:Calculate current walking status and starting location.
+o compute param_dest:var:WalkPage param_src:var:FinishExcuteMotionPage aop:- param_src:var:WalkPageStart
+- 
+o compute param_dest:var:Temp1 param_src:var:WalkPage aop:/ param_src:dec_num:12
+o compute param_dest:var:Temp1 param_src:var:Temp1 aop:* param_src:dec_num:12
+- 
+o compute param_dest:var:LeftRightStep param_src:var:WalkPage aop:- param_src:var:Temp1
+o // param_text:Need to judge where to go between the left and right direction. 
+- 
+o if param_src:var:LeftRightStep lop:== param_src:dec_num:10 rop:then
+o load param_dest:var:LeftRightStep param_src:dec_num:2
+o else
+o load param_dest:var:LeftRightStep param_src:dec_num:0
+- 
+o // param_text:Go on to ‘present walking command’ page
+o compute param_dest:var:WalkPage param_src:var:WalkCommand aop:- param_src:dec_num:1
+o compute param_dest:var:WalkPage param_src:var:WalkPage aop:* param_src:dec_num:12
+o compute param_dest:var:WalkPage param_src:var:WalkPage aop:+ param_src:var:WalkPageStart
+o compute param_dest:var:WalkPage param_src:var:WalkPage aop:+ param_src:var:LeftRightStep
+o compute param_dest:motion:1:50 param_src:var:WalkPage aop:+ param_src:dec_num:1
+o load param_dest:var:WalkState param_src:var:WalkCommand
+o end
+o end
+o function faddr_src:CurrentPageWaitMotion
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:-1
+o call faddr_dest:WaitMotion
+o end
+o function faddr_src:EXITPageWaitMotion
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:0
+o call faddr_dest:WaitMotion
+o end
+o function faddr_src:WaitMotion
+o begin
+o wait param_src:motion:1:51 lop:== param_src:bool_num:1 rop:then
+o end
+- 
+o function faddr_src:InitializationGyro
+o begin
+o load param_dest:var:FBBalCenter param_src:dec_num:0
+o load param_dest:var:RLBalCenter param_src:dec_num:0
+- 
+o for param_var:i param_src:dec_num:1 param_src:dec_num:10
+o begin
+o load param_dest:var:FBBalData param_src:aux:3:67
+o load param_dest:var:RLBalData param_src:aux:4:67
+- 
+o compute param_dest:var:FBBalCenter param_src:var:FBBalCenter aop:+ param_src:var:FBBalData
+o compute param_dest:var:RLBalCenter param_src:var:RLBalCenter aop:+ param_src:var:RLBalData
+- 
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o compute param_dest:var:FBBalCenter param_src:var:FBBalCenter aop:/ param_src:dec_num:10
+o compute param_dest:var:RLBalCenter param_src:var:RLBalCenter aop:/ param_src:dec_num:10
+- 
+o load param_dest:var:ExistGyro param_src:bool_num:1
+o if param_src:var:FBBalCenter lop:> param_src:dec_num:330 rop:|| param_src:var:FBBalCenter lop:< param_src:dec_num:230 rop:then
+o load param_dest:var:ExistGyro param_src:bool_num:0
+o if param_src:var:RLBalCenter lop:> param_src:dec_num:330 rop:|| param_src:var:RLBalCenter lop:< param_src:dec_num:230 rop:then
+o load param_dest:var:ExistGyro param_src:bool_num:0
+- 
+o if param_src:var:ExistGyro lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:7
+o end
+o load param_dest:var:GyroUse param_src:bool_num:1
+o load param_dest:var:Slip param_src:dec_num:0
+o end
+- 
+o callback
+o begin
+o if param_src:var:GyroUse lop:== param_src:bool_num:1 rop:&& param_src:var:ExistGyro lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:FBBalData param_src:aux:3:67
+o load param_dest:var:RLBalData param_src:aux:4:67
+- 
+o compute param_dest:var:FBBalError param_src:var:FBBalData aop:- param_src:var:FBBalCenter
+o compute param_dest:var:RLBalError param_src:var:RLBalData aop:- param_src:var:RLBalCenter
+- 
+o if param_src:var:FBBalError lop:> param_src:dec_num:200 rop:then
+o load param_dest:var:Slip param_src:dec_num:-1
+o elseif param_src:var:FBBalError lop:< param_src:dec_num:-200 rop:then
+o load param_dest:var:Slip param_src:dec_num:1
+- 
+o compute param_dest:var:FBBalErrorScaled param_src:var:FBBalError aop:* param_src:dec_num:4
+o compute param_dest:var:RLBalErrorScaled param_src:var:RLBalError aop:* param_src:dec_num:4
+- 
+o compute param_dest:var:FinalFBBal1 param_src:var:FBBalErrorScaled aop:/ param_src:dec_num:54
+o compute param_dest:var:FinalFBBal2 param_src:var:FBBalErrorScaled aop:/ param_src:dec_num:18
+- 
+o compute param_dest:var:FinalRLBal0 param_src:var:RLBalErrorScaled aop:/ param_src:dec_num:20
+o compute param_dest:var:FinalRLBal1 param_src:var:RLBalErrorScaled aop:/ param_src:dec_num:40
+- 
+o compute param_dest:motion:13:52 param_src:dec_num:0 aop:+ param_src:var:FinalFBBal1
+o compute param_dest:motion:15:52 param_src:dec_num:0 aop:+ param_src:var:FinalFBBal2
+o compute param_dest:motion:14:52 param_src:dec_num:0 aop:- param_src:var:FinalFBBal1
+o compute param_dest:motion:16:52 param_src:dec_num:0 aop:- param_src:var:FinalFBBal2
+- 
+o compute param_dest:motion:9:52 param_src:dec_num:0 aop:+ param_src:var:FinalRLBal1
+o compute param_dest:motion:10:52 param_src:dec_num:0 aop:+ param_src:var:FinalRLBal1
+o compute param_dest:motion:17:52 param_src:dec_num:0 aop:- param_src:var:FinalRLBal0
+o compute param_dest:motion:18:52 param_src:dec_num:0 aop:- param_src:var:FinalRLBal0
+o end
+o else
+o begin
+o load param_dest:motion:13:52 param_src:dec_num:0
+o load param_dest:motion:15:52 param_src:dec_num:0
+o load param_dest:motion:14:52 param_src:dec_num:0
+o load param_dest:motion:16:52 param_src:dec_num:0
+- 
+o load param_dest:motion:9:52 param_src:dec_num:0
+o load param_dest:motion:10:52 param_src:dec_num:0
+o load param_dest:motion:17:52 param_src:dec_num:0
+o load param_dest:motion:18:52 param_src:dec_num:0
+o end
+o end
