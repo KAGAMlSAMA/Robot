@@ -1,9 +1,14 @@
 # Robot
 Slides目录下存放着所有PPT和我上传的一些guide
+
 Motion目录下有期中的动作文件，需要自取
+
 Task目录下有一个官方的task例程，可以参考
+
 C_Code下有两个目录，其中：
+
   graphic_test是第一次使用的例程，大家可以参考里面的读取FPGA数据的方法进行图像处理
+  
   Robot_example是我给大家提供的一个主函数框架，大家可以在这个的基础上完成最后的调试
   
   
